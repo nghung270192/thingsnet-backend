@@ -3,25 +3,17 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.2.4</version>
+        <groupId>com.thingsnet</groupId>
+        <artifactId>thingsnet</artifactId>
+        <version>0.0.1-SNAPSHOT</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
-    <groupId>com.thingsnet</groupId>
-    <artifactId>thingsnet</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
-    <packaging>pom</packaging>
-    <name>thingsnet</name>
-    <description>thingsnet iot platform</description>
-    <modules>
-        <module>DeviceManagementMicroService</module>
-        <module>TransportMicroService</module>
-        <module>EurekaServer</module>
-        <module>ApplicationMicroService</module>
-        <module>Gateway</module>
-    </modules>
 
+    <groupId>org.thingsnet</groupId>
+    <artifactId>EurekaServer</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+    <name>EurekaServer</name>
+    <description>EurekaServer</description>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
@@ -32,17 +24,8 @@
         <spring.boot.dependencies.version>3.2.4</spring.boot.dependencies.version>
         <spring-cloud.version>2023.0.1</spring-cloud.version>
     </properties>
-
-
     <dependencyManagement>
         <dependencies>
-            <dependency>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-dependencies</artifactId>
-                <version>${spring.boot.dependencies.version}</version>
-                <scope>import</scope>
-                <type>pom</type>
-            </dependency>
             <dependency>
                 <groupId>org.springframework.cloud</groupId>
                 <artifactId>spring-cloud-dependencies</artifactId>
@@ -52,18 +35,17 @@
             </dependency>
         </dependencies>
     </dependencyManagement>
-
     <dependencies>
         <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-netflix-eureka-server</artifactId>
         </dependency>
+
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
         </dependency>
-
-
     </dependencies>
 
     <build>
@@ -71,7 +53,6 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
-                <version>${spring.boot.maven.plugin.version}</version>
             </plugin>
         </plugins>
     </build>
