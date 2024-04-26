@@ -1,12 +1,19 @@
 package org.thingsnet.application.Data.id;
 
-import lombok.Getter;
+import lombok.*;
 
 import java.io.Serializable;
 import java.util.UUID;
 
 
-@Getter
+@EqualsAndHashCode(callSuper = true)
+@NoArgsConstructor
+@AllArgsConstructor
+@Data
 public class EntityId extends UUIDBase {
-    private EntityType entityType;
+    protected EntityType entityType;
+
+    public EntityId(UUID id) {
+        super(id);
+    }
 }

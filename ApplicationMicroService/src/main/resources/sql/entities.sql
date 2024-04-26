@@ -18,7 +18,7 @@ CREATE TABLE  IF NOT EXISTS roles
     name varchar(255) UNIQUE NOT NULL
 );
 
-CREATE TABLE privileges
+CREATE TABLE IF NOT EXISTS privileges
 (
     id   uuid                NOT NULL
         CONSTRAINT privileges_pkey PRIMARY KEY,
@@ -46,4 +46,17 @@ CREATE TABLE  IF NOT EXISTS roles_privileges
     /*Xoa user id or role is => row in users_roles delete too*/
     FOREIGN KEY (role_id) REFERENCES roles (id) ON DELETE CASCADE,
     FOREIGN KEY (privilege_id) REFERENCES privileges (id) ON DELETE CASCADE
+);
+
+CREATE TABLE  IF NOT EXISTS devices
+(
+    id              uuid   NOT NULL  CONSTRAINT devices_pkey PRIMARY KEY,
+    name            varchar(255) UNIQUE NOT NULL,
+    profile         varchar(255),
+    user_id         uuid NOT NULL,
+    created_time    bigint NOT NULL,
+    updated_time    bigint NOT NULL,
+    attributes      varchar,
+    status BOOLEAN DEFAULT false,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );

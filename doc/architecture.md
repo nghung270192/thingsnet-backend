@@ -1,0 +1,1 @@
+device ------mqtt ----- kafka(zookeeper) -----websocket ----- 

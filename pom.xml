@@ -20,6 +20,8 @@
         <module>EurekaServer</module>
         <module>ApplicationMicroService</module>
         <module>Gateway</module>
+        <module>netty-mqtt-broker</module>
+        <module>Queue</module>
     </modules>
 
     <properties>
@@ -31,6 +33,7 @@
         <spring.boot.maven.plugin.version>3.2.4</spring.boot.maven.plugin.version>
         <spring.boot.dependencies.version>3.2.4</spring.boot.dependencies.version>
         <spring-cloud.version>2023.0.1</spring-cloud.version>
+
     </properties>
 
 
@@ -58,6 +61,8 @@
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
         </dependency>
+
+
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>

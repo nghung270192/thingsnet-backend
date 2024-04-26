@@ -18,8 +18,10 @@ import org.springframework.web.bind.annotation.RestController;
 import org.thingsnet.application.DTO.AuthDTO;
 import org.thingsnet.application.Data.User;
 import org.thingsnet.application.Services.AuthService;
-import org.thingsnet.application.util.ThignsNetException.ErrorResponse;
-import org.thingsnet.application.util.ThignsNetException.ThingsNetErrorCode;
+import org.thingsnet.application.Services.UserService;
+import org.thingsnet.application.util.ThignsNetException.EmailExistException;
+import org.thingsnet.application.util.ThignsNetException.ErrorResponse.ErrorResponse;
+import org.thingsnet.application.util.ThignsNetException.ErrorResponse.ThingsNetErrorCode;
 
 @RestController
 @RequestMapping("/api/v1/auth")
@@ -30,6 +32,8 @@ public class AuthController {
 
     @Autowired
     private AuthService authService;
+    @Autowired
+    private UserService userService;
 
     @Autowired
     private AuthenticationManager authenticationManager;
@@ -37,8 +41,7 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody AuthDTO.LoginRequest userLogin) throws IllegalAccessException {
         try {
-            Authentication authentication = authenticationManager
-                    .authenticate(new UsernamePasswordAuthenticationToken(userLogin.email(), userLogin.password()));
+            Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(userLogin.email(), userLogin.password()));
             SecurityContextHolder.getContext().setAuthentication(authentication);
 
             log.info("Token requested for user :{}", authentication.getAuthorities());
@@ -48,12 +51,7 @@ public class AuthController {
 
             return ResponseEntity.ok(response);
         } catch (AuthenticationException e) {
-            ErrorResponse errorResponse = ErrorResponse.builder()
-                    .status(HttpStatus.UNAUTHORIZED.value())
-                    .errorCode(ThingsNetErrorCode.AUTHENTICATION)
-                    .message("Authentication failed")
-                    .timestamp(System.currentTimeMillis())
-                    .build();
+            ErrorResponse errorResponse = ErrorResponse.builder().status(HttpStatus.UNAUTHORIZED.value()).errorCode(ThingsNetErrorCode.AUTHENTICATION).message("Authentication failed").timestamp(System.currentTimeMillis()).build();
 
             return new ResponseEntity<>(errorResponse, HttpStatus.UNAUTHORIZED);
         } catch (Exception e) {
@@ -62,5 +60,19 @@ public class AuthController {
 
     }
 
+    @PostMapping("/register")
+    public ResponseEntity<?> register(@RequestBody AuthDTO.Register userRegister) {
+        try {
+            User user = userService.createUser(userRegister.email(), userRegister.password(), userRegister.role());
+            return ResponseEntity.ok(user);
+        } catch (EmailExistException e) {
+            ErrorResponse errorResponse = ErrorResponse.builder().message(e.getMessage()).status(HttpStatus.CONFLICT.value()).timestamp(System.currentTimeMillis()).errorCode(e.getErrorCode()).build();
+            System.out.println(errorResponse);
+            return ResponseEntity.ok(errorResponse);
+        } catch (Exception e) {
+            return ResponseEntity.ok(e.getMessage());
+        }
+
+    }
 
 }

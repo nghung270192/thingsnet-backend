@@ -65,6 +65,7 @@ public class SecurityConfig {
 
                     auth.requestMatchers("/api/v1/user/**").permitAll();
                     auth.requestMatchers("/api/v1/device**").permitAll();
+                    auth.requestMatchers("/api/v1/device/**").permitAll();
 
                     auth.requestMatchers("/swagger-ui**","/swagger-ui/**","/v3/api-docs/**").permitAll();
                     auth.anyRequest().authenticated();

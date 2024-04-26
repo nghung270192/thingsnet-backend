@@ -6,15 +6,18 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
+import java.util.UUID;
 
-@EqualsAndHashCode(callSuper = true)
+
 @Data
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "roles")
-public class RoleEntity extends BaseSqlEntity {
-
+public class RoleEntity {
+    @Id
+    @Column(name = ModelConstants.ID_PROPERTY, columnDefinition = "uuid")
+    private UUID id;
     @Column(name = "name")
     private String name;
 

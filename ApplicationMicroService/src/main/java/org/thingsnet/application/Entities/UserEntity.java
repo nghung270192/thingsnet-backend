@@ -9,14 +9,16 @@ import org.thingsnet.application.Data.User;
 
 import java.util.*;
 
-@EqualsAndHashCode(callSuper = true)
 @Data
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "users")
-public class UserEntity extends BaseSqlEntity implements ToData<User> {
+public class UserEntity implements ToData<User> {
 
+    @Id
+    @Column(name = ModelConstants.ID_PROPERTY, columnDefinition = "uuid")
+    private UUID id;
 
     @Column(name = "created_time")
     private long createdTime;

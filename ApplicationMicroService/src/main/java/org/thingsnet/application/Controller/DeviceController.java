@@ -1,32 +1,67 @@
 package org.thingsnet.application.Controller;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import org.thingsnet.application.Data.Device;
+import org.thingsnet.application.Services.DeviceService;
+import org.thingsnet.application.util.ThignsNetException.DeviceNameExistException;
+import org.thingsnet.application.util.ThignsNetException.ErrorResponse.ErrorResponse;
+import org.thingsnet.application.util.ThignsNetException.ErrorResponse.ThingsNetErrorCode;
+import org.thingsnet.application.util.ThignsNetException.UserNotFoundException;
+
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/v1/device")
 public class DeviceController {
 
-    @PreAuthorize("hasAnyRole('SCOPE_ADMIN','SCOPE_USER')")
-    @GetMapping
-    public String getDevices() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication != null && authentication.isAuthenticated()) {
-            // Retrieve the roles (authorities) associated with the user
-            for (GrantedAuthority authority : authentication.getAuthorities()) {
-                String role = authority.getAuthority();
-                // Do something with the role
-                System.out.println("Role: " + role);
-            }
-        }
-        System.out.println(authentication);
+    @Autowired
+    DeviceService deviceService;
 
-        return "I am a getDevices";
+//    @PreAuthorize("isAuthenticated()")
+    @PostMapping
+    public ResponseEntity<?> saveDevice(@RequestBody Device device) {
+
+        try {
+            return new ResponseEntity<>(deviceService.saveDevice(device), HttpStatus.OK);
+        } catch (UserNotFoundException e) {
+            return new ResponseEntity<>(ErrorResponse.builder()
+                    .status(HttpStatus.NOT_FOUND.value())
+                    .message(e.getMessage())
+                    .errorCode(e.getErrorCode())
+                    .build(), HttpStatus.NOT_FOUND);
+        } catch (DeviceNameExistException e) {
+            return new ResponseEntity<>(ErrorResponse.builder()
+                    .status(HttpStatus.CONFLICT.value())
+                    .message(e.getMessage())
+                    .errorCode(e.getErrorCode())
+                    .build(), HttpStatus.CONFLICT);
+        } catch (Exception e) {
+            return new ResponseEntity<>(ErrorResponse.builder()
+                    .status(HttpStatus.BAD_REQUEST.value())
+                    .message(e.getMessage())
+                    .errorCode(ThingsNetErrorCode.BAD_REQUEST_PARAMS)
+                    .build(), HttpStatus.BAD_REQUEST);
+        }
     }
+
+    //    @PreAuthorize("isAuthenticated()")
+    @DeleteMapping("/{deviceId}")
+    public ResponseEntity<?> deleteDevice(@PathVariable(name = "deviceId") String deviceId) {
+        try {
+            deviceService.deleteDevice(UUID.fromString(deviceId));
+            return new ResponseEntity<>("Deleted successfully.", HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(ErrorResponse.builder()
+                    .status(HttpStatus.BAD_REQUEST.value())
+                    .message(e.getMessage())
+                    .errorCode(ThingsNetErrorCode.BAD_REQUEST_PARAMS)
+                    .build(), HttpStatus.BAD_REQUEST);
+        }
+    }
+
 
 }

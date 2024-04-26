@@ -1,8 +1,6 @@
 package org.thingsnet.application.Data.id;
 
-import jakarta.persistence.MappedSuperclass;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -13,5 +11,5 @@ import java.util.UUID;
 @AllArgsConstructor
 @NoArgsConstructor
 public class UUIDBase implements Serializable {
-    private UUID id;
+    protected UUID id;
 }
